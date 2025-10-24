@@ -16,4 +16,4 @@ COPY . .
 # Expose the port
 EXPOSE 5000
 
-CMD [ "node", "src/app.js" ]
+CMD [ "npm", "start" ]
