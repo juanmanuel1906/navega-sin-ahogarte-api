@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const sequelize = require('./config/database');
@@ -11,6 +13,7 @@ const userRoutes = require('./routes/user.routes');
 const postRoutes = require('./routes/post.routes');
 
 const app = express();
+const PORT = process.env.PORT;
 
 // Middlewares
 app.use(cors()); // Permite peticiones desde Angular
@@ -26,7 +29,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
 
 app.get('/', (req, res) => {
-  res.send('API de Navega sin ahogarte funcionando correctamente.');
+  res.send(`API de Navega sin ahogarte funcionando correctamente en puerto ${PORT}.`);
 });
 
 module.exports = app;
