@@ -1,20 +1,20 @@
-const http = require('http'); // 1. Importa el módulo http de Node
-const app = require('./app'); // Tu aplicación de Express
+const http = require('http');
+const app = require('./app');
 const { sequelize } = require('./models');
 
-// 2. Crea un servidor HTTP a partir de tu app de Express
+// Crea un servidor HTTP a partir de tu app de Express
 const server = http.createServer(app); 
 
-// 3. Inicializa Socket.IO y únelo al servidor HTTP
+// Inicializa Socket.IO y únelo al servidor HTTP
 const { Server } = require("socket.io");
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:4200", // La URL de tu frontend en Angular
+    origin: ["http://localhost:4200", "https://navegasinahogarte.com", "https://nsadev.navegasinahogarte.com"], // La URL de tu frontend en Angular
     methods: ["GET", "POST"]
   }
 });
 
-// 4. Guarda la instancia de 'io' en la app para poder usarla en los controladores
+// Guarda la instancia de 'io' en la app para poder usarla en los controladores
 app.set('socketio', io);
 
 // Lógica de conexión de Socket.IO
