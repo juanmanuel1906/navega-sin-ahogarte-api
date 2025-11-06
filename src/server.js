@@ -3,13 +3,14 @@ const app = require('./app');
 const { sequelize } = require('./models');
 
 // Crea un servidor HTTP a partir de tu app de Express
-const server = http.createServer(app); 
+const server = http.createServer(app);
 
 // Inicializa Socket.IO y únelo al servidor HTTP
 const { Server } = require("socket.io");
 const io = new Server(server, {
+  path: "/api/socket.io/",
   cors: {
-    origin: ["http://localhost:4200", "https://navegasinahogarte.com", "https://nsadev.navegasinahogarte.com"], // La URL de tu frontend en Angular
+    origin: ["http://localhost:4200", "https://navegasinahogarte.com"],
     methods: ["GET", "POST"]
   }
 });
