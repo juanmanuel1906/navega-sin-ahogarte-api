@@ -238,7 +238,7 @@ exports.deletePost = async (req, res) => {
     const user = await User.findByPk(userId);
     
     const isAuthor = (post.userId && post.userId === userId) || (post.deviceId && post.deviceId === deviceId);
-    const isAdmin = user.role === 'administrator';
+    const isAdmin = user?.role === 'administrator';
     
 
     if (!isAuthor && !isAdmin) {
