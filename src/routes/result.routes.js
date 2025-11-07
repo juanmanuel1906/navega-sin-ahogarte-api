@@ -5,5 +5,6 @@ const resultController = require('../controllers/result.controller');
 
 // Se llama a la función desde el objeto importado
 router.post('/results', resultController.createResult);
+router.get('/results/latest/:userId', resultController.getLatestResultByUser);
 
 module.exports = router;

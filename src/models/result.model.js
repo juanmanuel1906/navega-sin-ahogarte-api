@@ -9,7 +9,15 @@ const TestResult = sequelize.define('TestResult', {
   },
   device_id: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
+  },
+  user_id: {
+    type:  DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: 'users',
+      key: 'id'
+    }
   },
   age_range: {
     type: DataTypes.STRING,
