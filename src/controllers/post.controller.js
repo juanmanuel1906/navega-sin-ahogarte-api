@@ -15,25 +15,38 @@ const { Post, Comment, PostIdentify, CommentIdentify, User, sequelize } = requir
 exports.createPost = async (req, res) => {
   try {
     const { message, deviceId, nickname } = req.body;
-    const userId = req.userId; // Asumimos que un middleware previo establece esto
 
-    if (!userId && !deviceId) {
+    // Capturamos el ID del usuario del token (si existe)
+    let currentUserId = req.userId; 
+
+    // LÓGICA DE PRIORIDAD: 
+    // Si envían un nickname, asumimos que quieren ser anónimos, 
+    // incluso si tienen sesión iniciada (token válido).
+    if (nickname) {
+        currentUserId = null; 
+    }
+
+    // Validación de seguridad
+    if (!currentUserId && !deviceId) {
       return res.status(400).json({ message: 'Se requiere un identificador de usuario o dispositivo.' });
     }
 
     const post = await Post.create({
       message,
-      userId: userId || null,
-      deviceId: userId ? null : deviceId,
-      anonymousNickname: userId ? null : nickname,
+      // Usamos la variable local que modificamos arriba
+      userId: currentUserId, 
+      
+      // Si currentUserId es null (porque es anónimo), guardamos el deviceId
+      deviceId: currentUserId ? null : deviceId,
+      
+      // Si currentUserId es null, guardamos el nickname
+      anonymousNickname: currentUserId ? null : nickname,
     });
 
-    // En lugar de hacer otra consulta, recargamos la instancia con la info del autor. Es más eficiente.
     await post.reload({
       include: [{ model: User, attributes: ['name'] }]
     });
 
-    // Emitimos el evento a todos los clientes conectados
     const io = req.app.get('socketio');
     io.emit('newPost', post); 
 
@@ -81,7 +94,14 @@ exports.createComment = async (req, res) => {
   try {
     const { postId } = req.params;
     const { message, deviceId, nickname } = req.body;
-    const userId = req.userId;
+    let userId = req.userId;
+
+    // LÓGICA DE PRIORIDAD: 
+    // Si envían un nickname, asumimos que quieren ser anónimos, 
+    // incluso si tienen sesión iniciada (token válido).
+    if (nickname) {
+        userId = null; 
+    }
 
     if (!userId && !deviceId) {
       return res.status(400).json({ message: 'Se requiere un identificador.' });
@@ -91,7 +111,7 @@ exports.createComment = async (req, res) => {
       message,
       postId,
       userId: userId || null,
-      deviceId: deviceId,
+      deviceId: userId ? null : deviceId,
       anonymousNickname: userId ? null : nickname,
     });
     

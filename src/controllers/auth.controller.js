@@ -9,7 +9,7 @@ const generateTokens = (user) => {
   const accessToken = jwt.sign(
     { id: user.id, role: user.role },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: '24h' } // 24 hours expiration
+    { expiresIn: '1h' } // 1 hour expiration
   );
 
   const refreshToken = jwt.sign(
@@ -92,24 +92,38 @@ exports.login = async (req, res) => {
 
 // Refresh Access Token
 exports.refreshToken = (req, res) => {
-    const { token } = req.body;
+    const { token } = req.body; // El refresh token que envía el front
 
     if (!token) {
         return res.status(401).json({ message: "Refresh token is required." });
     }
 
-    jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, async (err, decoded) => {
         if (err) {
             return res.status(403).json({ message: "Refresh token is not valid." });
         }
 
-        // We don't need to check the DB again, but for extra security you could
-        const newAccessToken = jwt.sign(
-            { id: user.id, role: user.role }, // Assuming role is needed and was in refresh token payload (or fetch from DB)
-            process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: '24h' }
-        );
+        try {
+            // Buscamos al usuario en la BD para asegurar que existe y obtener su ROL actual
+            const user = await User.findByPk(decoded.id);
+            
+            if (!user) {
+                return res.status(403).json({ message: "User not found" });
+            }
 
-        res.json({ accessToken: newAccessToken });
+            // Generamos un nuevo Access Token (y opcionalmente rotar el Refresh Token)
+            const newAccessToken = jwt.sign(
+                { id: user.id, role: user.role }, // Aquí sí tenemos el rol fresco de la BD
+                process.env.ACCESS_TOKEN_SECRET,
+                { expiresIn: '24h' }
+            );
+
+            // Opcional: Si quieres que dure más de 7 días, aumenta el tiempo en generateTokens a '30d'
+            
+            res.json({ accessToken: newAccessToken });
+
+        } catch (error) {
+            res.status(500).json({ message: "Error refreshing token" });
+        }
     });
 };

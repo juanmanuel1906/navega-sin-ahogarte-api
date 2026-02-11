@@ -11,6 +11,7 @@ const dashboardRoutes = require('./routes/dashboard.routes');
 const analyticsRoutes = require('./routes/analytics.routes');
 const userRoutes = require('./routes/user.routes');
 const postRoutes = require('./routes/post.routes');
+const learningRoutes = require('./routes/learning.routes');
 
 const app = express();
 const PORT = process.env.PORT;
@@ -27,6 +28,8 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api/learning', learningRoutes);
+
 
 app.get('/', (req, res) => {
   res.send(`API de Navega sin ahogarte funcionando correctamente en puerto ${PORT}.`);

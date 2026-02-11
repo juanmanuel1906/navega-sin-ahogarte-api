@@ -1,6 +1,7 @@
 const http = require('http');
 const app = require('./app');
-const { sequelize } = require('./models');
+const { sequelize, Course, Module } = require('./models');
+const seedDatabase = require('./config/seed')
 
 // Crea un servidor HTTP a partir de tu app de Express
 const server = http.createServer(app);
@@ -34,6 +35,7 @@ server.listen(PORT, async () => { // 5. Usa server.listen en lugar de app.listen
   try {
     await sequelize.sync({ force: false }); // Sincroniza los modelos con la BD
     await sequelize.sync({ alter: true }); // Esto añadirá la nueva columna sin borrar datos.
+    await seedDatabase({ Course, Module });
 
     console.log('✅ Base de datos sincronizada.');
   } catch (error) {
