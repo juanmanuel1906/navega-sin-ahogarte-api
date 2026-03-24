@@ -208,7 +208,7 @@ const seedDatabase = async () => {
     // Insertar módulos (Solo si el curso fue recién creado o usando lógica de validación)
     // Usamos un loop o bulkCreate con validación para no duplicar por título
     for (const mod of modulesData) {
-      await Module.findOrCreate({
+      const [dbModule] = await Module.findOrCreate({
         where: { videoId: mod.videoId },
         defaults: {
           title: mod.title,
@@ -222,9 +222,9 @@ const seedDatabase = async () => {
       if (mod.questions) {
         for (const qData of mod.questions) {
           // Crear/Buscar Pregunta
-          const [question] = await Question.findOrCreate({
+          const [dbQuestion] = await Question.findOrCreate({
             where: {
-              moduleId: question.module_id,
+              moduleId: dbModule.module_id,
               text: qData.question_text
             }
           });
@@ -233,8 +233,8 @@ const seedDatabase = async () => {
           for (const optData of qData.options) {
             await Option.findOrCreate({
               where: {
-                questionId: optData.question_id,
-                text: optData.option_text
+                questionId: dbQuestion.id,
+                option_text: optData.option_text
               },
               defaults: {
                 is_correct: optData.is_correct
