@@ -22,7 +22,7 @@ const seedDatabase = async () => {
       {
         title: "Encender la chispa de los Primeros Auxilios Emocionales",
         description: "Preguntas de comprensión sobre el objetivo, acompañamiento, calma y límites en PAE.",
-        videoId: "eXZL2x4-3Ls",
+        video_id: "eXZL2x4-3Ls",
         duration: "3:00",
         order_index: 1,
         courseId: course.id, // Usamos la FK del curso encontrado/creado
@@ -68,7 +68,7 @@ const seedDatabase = async () => {
       {
         title: "Prepararse para acompañar en medio del caos",
         description: "Cuidar al cuidador y técnicas de observación antes de intervenir.",
-        videoId: "phr_Iu2XfxI",
+        video_id: "phr_Iu2XfxI",
         duration: "3:27",
         courseId: course.id,
         order_index: 2,
@@ -114,7 +114,7 @@ const seedDatabase = async () => {
       {
         title: "Escuchar con el corazón, apoyar con la presencia",
         description: "Técnicas de empatía, validación y manejo de reacciones intensas.",
-        video_url: "hRzZ_b9SVb4",
+        video_id: "hRzZ_b9SVb4",
         duration: "3:31",
         courseId: course.id,
         order_index: 3,
@@ -209,7 +209,7 @@ const seedDatabase = async () => {
     // Usamos un loop o bulkCreate con validación para no duplicar por título
     for (const mod of modulesData) {
       const [dbModule] = await Module.findOrCreate({
-        where: { videoId: mod.videoId },
+        where: { videoId: mod.video_id },
         defaults: {
           title: mod.title,
           description: mod.description,
