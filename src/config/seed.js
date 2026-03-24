@@ -224,7 +224,7 @@ const seedDatabase = async () => {
           // Crear/Buscar Pregunta
           const [dbQuestion] = await Question.findOrCreate({
             where: {
-              moduleId: dbModule.module_id,
+              moduleId: dbModule.id,
               text: qData.question_text
             }
           });
