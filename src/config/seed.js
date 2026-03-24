@@ -208,8 +208,35 @@ const seedDatabase = async (models) => {
     for (const mod of modulesData) {
       await Module.findOrCreate({
         where: { videoId: mod.videoId },
-        defaults: mod
+        defaults: mod,
+        courseId: course.id
       });
+
+      if (mod.questions) {
+        for (const qData of mod.questions) {
+          // Crear/Buscar Pregunta
+          const [question] = await Question.findOrCreate({
+            where: { 
+              moduleId: module.id, 
+              text: qData.text 
+            }
+          });
+
+          // Crear/Buscar Opciones para esa pregunta
+          for (const optData of qData.options) {
+            await Option.findOrCreate({
+              where: { 
+                questionId: question.id, 
+                option_text: optData.option_text
+              },
+              defaults: {
+                isCorrect: optData.is_correct
+              },
+            });
+          }
+
+        }
+      }
     }
 
     console.log('🚀 Módulos sincronizados correctamente.');
