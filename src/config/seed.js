@@ -210,25 +210,30 @@ const seedDatabase = async () => {
     for (const mod of modulesData) {
       await Module.findOrCreate({
         where: { videoId: mod.videoId },
-        defaults: mod,
-        courseId: course.id
+        defaults: {
+          title: mod.title,
+          description: mod.description,
+          duration: mod.duration,
+          order_index: mod.order_index,
+          courseId: course.id
+        }
       });
 
       if (mod.questions) {
         for (const qData of mod.questions) {
           // Crear/Buscar Pregunta
           const [question] = await Question.findOrCreate({
-            where: { 
-              moduleId: module.id, 
-              text: qData.text 
+            where: {
+              moduleId: module.id,
+              text: qData.question_text
             }
           });
 
           // Crear/Buscar Opciones para esa pregunta
           for (const optData of qData.options) {
             await Option.findOrCreate({
-              where: { 
-                questionId: question.id, 
+              where: {
+                questionId: question.id,
                 option_text: optData.option_text
               },
               defaults: {
