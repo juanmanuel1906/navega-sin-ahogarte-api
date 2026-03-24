@@ -224,7 +224,7 @@ const seedDatabase = async () => {
           // Crear/Buscar Pregunta
           const [question] = await Question.findOrCreate({
             where: {
-              module_id: qData.module_id,
+              moduleId: question.module_id,
               text: qData.question_text
             }
           });
@@ -234,7 +234,7 @@ const seedDatabase = async () => {
             await Option.findOrCreate({
               where: {
                 questionId: optData.question_id,
-                option_text: optData.option_text
+                text: optData.option_text
               },
               defaults: {
                 is_correct: optData.is_correct
