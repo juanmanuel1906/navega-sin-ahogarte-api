@@ -1,6 +1,6 @@
 const seedDatabase = async (models) => {
   try {
-    const { Course, Module } = models;
+    const { Course, Module, Question } = models;
 
     // Crear el Curso si no existe
     const [course, created] = await Course.findOrCreate({
