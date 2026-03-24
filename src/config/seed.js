@@ -233,6 +233,7 @@ const seedDatabase = async () => {
           for (const optData of qData.options) {
             await Option.findOrCreate({
               where: {
+                moduleId: dbModule.id,
                 questionId: dbQuestion.id,
                 option_text: optData.option_text
               },
